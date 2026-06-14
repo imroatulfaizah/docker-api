@@ -26,3 +26,4 @@ jobs:
       - run: dotnet build --no-restore
 
       - run: dotnet test --no-build
+      

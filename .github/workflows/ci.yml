@@ -27,3 +27,15 @@ jobs:
       - run: dotnet build --no-restore
 
       - run: dotnet test --no-build
+
+      # docker
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      - name: Build Docker Image
+        run: |
+          docker build -t ghcr.io/${{ github.actor }}/docker-api:latest .
+
+      - name: Push Docker Image
+        run: |
+          docker push ghcr.io/${{ github.actor }}/docker-api:latest

@@ -1,0 +1,30 @@
+services:
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "faizah@123"
+
+    ports:
+      - "1433:1433"
+
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: docker-api
+    depends_on:
+      - sqlserver
+    ports:
+      - "5000:8080"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=dockerdb;User Id=sa;Password=faizah@123;TrustServerCertificate=True;"
+
+volumes:
+  sql_data:

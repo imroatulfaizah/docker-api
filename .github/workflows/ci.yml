@@ -10,23 +10,31 @@ on:
       branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v4
+      - name: Setup .Net
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      
-      - run: dotnet restore
+      - name: Restore
+        run: dotnet restore
 
-      - run: dotnet build --no-restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-      - run: dotnet test --no-build
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
 
       # docker
       - name: Login to GHCR
@@ -34,8 +42,7 @@ jobs:
       
       - name: Build Docker Image
         run: |
-          docker build -t ghcr.io/${{ github.actor }}/docker-api:latest .
+          docker build -t ghcr.io/${{ github.repository_owner }}/docker-api:latest .
 
       - name: Push Docker Image
-        run: |
-          docker push ghcr.io/${{ github.actor }}/docker-api:latest
+        run: docker push ghcr.io/${{ github.repository_owner }}/docker-api:latest

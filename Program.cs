@@ -49,6 +49,15 @@ app.MapGet("/hello", () =>
     return Results.Ok("Hello from Docker!");
 });
 
+app.MapGet("/hai", (IConfiguration config) =>
+{
+    return new
+    {
+        Message = "Hai Kubernetes!",
+        Environment = config["APP_ENV"]
+    };
+});
+
 app.MapGet("/dbtest", async (AppDbContext db) =>
 {
     var canConnect = await db.Database.CanConnectAsync();
